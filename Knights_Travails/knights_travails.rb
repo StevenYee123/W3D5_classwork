@@ -1,0 +1,98 @@
+require_relative '../skeleton/lib/00_tree_node'
+
+class KnightPathFinder
+    attr_reader :root_node, :considered_positions
+    def self.valid_moves(pos)
+        row, col = pos
+        pos = [[-2, -1], [-2, 1], [-1, 2], [1, 2], [2,1], [2,-1], [1,-2], [-1,-2]]
+        valid_pos = []
+        pos.each do |moves|
+            if (moves.first + row >= 0 && moves.first + row <= 7) && 
+                (moves.last + col >= 0 && moves.last + col <= 7)
+                valid_pos << [moves.first + row, moves.last + col]
+            end
+        end
+        valid_pos
+    end
+
+    def initialize(pos)
+        @root_node = PolyTreeNode.new(pos)
+        @considered_positions = [pos]
+        # valid_move.each { |pos| @root_node.add_child(PolyTreeNode.new(pos))}
+    end
+
+    def new_move_positions(pos)
+        moves = KnightPathFinder.valid_moves(pos)
+        valid_moves = moves.select { |ele| !@considered_positions.include?(ele)}
+        @considered_positions += valid_moves
+        valid_moves
+    end
+
+    # def make_valid_moves(arr)
+        
+    # end
+    #Board would be 8 x 8
+    #Rows and cols CANNOT be greater than 7 or less than 0
+
+    #Starting spot = [X,Y] in this case 3,3
+    #First pos = [x-2 , y-1] 
+    #Second pos = [x-2, y+1]
+    #Third pos = [x-1, y+2]
+    #Fourth pos = [x+1, y+2]
+    #Fifth pos = [x+2, y+1]
+    #Sixth pos = [x+2, y-1]
+    #Seventh pos = [x+1, y-2]
+    #Eight pos = [x-1, y-2]
+     # 0 1 2 3 4 5 6 7
+    #0  
+    #1     S   S
+    #2   S       S
+    #3       K
+    #4   S       S
+    #5     S   S
+    #6
+    #7
+end
+
+# Knight's Travails
+# Read through all the instructions before beginning!
+
+# Learning Goals
+# Be able to implement your PolyTreeNode to build a path from start to finish
+# Know how to store and traverse a tree
+# Know when and why to use BFS vs. DFS
+# Phase 0: Description
+# In this project we will create a class that will find the shortest path for a Chess Knight from a starting position to an end position. Both the start and end positions should be on a standard 8x8 chess board.
+
+# NB: this problem is a lot like word chains!
+
+# Write a class, KnightPathFinder. Initialize your KnightPathFinder with a starting position. For instance:
+
+# kpf = KnightPathFinder.new([0, 0])
+# Ultimately, I want to be able to find paths to end positions:
+
+# kpf.find_path([2, 1]) # => [[0, 0], [2, 1]]
+# kpf.find_path([3, 3]) # => [[0, 0], [2, 1], [3, 3]]
+# To help us find paths, we will build a move tree. The values in the tree will be positions. A node is a child of another node if you can move from the parent position directly to the child position. The root node of the tree should be the knight's starting position. You will want to build on your PolyTreeNode work, using PolyTreeNode instances to represent each position.
+
+# Start by creating an instance variable, self.root_node that stores the knight's initial position in an instance of your PolyTreeNode class.
+
+# You will be writing an instance method KnightPathFinder#build_move_tree to build the move tree, beginning with self.root_node. Call this method in initialize; You will traverse the move tree whenever #find_path is called. Don't write this yet though.
+
+# Phase I: #new_move_positions
+# Before we start #build_move_tree, you'll want to be able to find new positions you can move to from a given position. Write a class method KnightPathFinder::valid_moves(pos). There are up to eight possible moves.
+
+# You'll also want to avoid repeating positions in the move tree. For instance, we don't want to infinitely explore moving betweeen the same two positions. Add an instance variable, @considered_positions to keep track of the positions you have considered; initialize it to the array containing just the starting pos. Write an instance method #new_move_positions(pos); this should call the ::valid_moves class method, but filter out any positions that are already in @considered_positions. It should then add the remaining new positions to @considered_positions and return these new positions.
+
+# Phase II: #build_move_tree
+# Let's return to #build_move_tree. We'll use our #new_move_positions instance method.
+
+# To ensure that your tree represents only the shortest path to a given position, build your tree in a breadth-first manner. Take inspiration from your BFS algorithm: use a queue to process nodes in FIFO order. Start with a root node representing the start_pos and explore moves from one position at a time.
+
+# Next build nodes representing positions one move away, add these to the queue. Then take the next node from the queue... until the queue is empty.
+
+# When you have completed, and tested, #build_move_tree get a code review from your TA.
+
+# Head to Part 2!
+# Once you are finished with phases 1 & 2 head over to Part Two. 
+
